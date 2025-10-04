@@ -35,13 +35,13 @@
 
             <div class="info-item">
                 <strong>📅 Cadastrado em:</strong>
-                <span>{{user.createdAt}}</span>
+                <span>{{formatDate user.createdAt}}</span>
             </div>
 
             {{#if user.updatedAt}}
             <div class="info-item">
                 <strong>🔄 Última atualização:</strong>
-                <span>{{user.updatedAt}}</span>
+                <span>{{formatDate user.updatedAt}}</span>
             </div>
             {{/if}}
         </div>

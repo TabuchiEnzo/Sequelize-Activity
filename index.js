@@ -1,9 +1,13 @@
+const { registerHelpers } = require('./src/helpers/handlebars-helpers');
 const express = require('express');
 const exphbs = require('express-handlebars');
 const path = require('path');
 const conn = require('./src/db/conn');
 const User = require('./src/models/User');
 const Address = require('./src/models/Adrdress');
+
+// registro do helper para formatDate
+registerHelpers();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
