@@ -1,8 +1,6 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const path = require('path');
-
-// Importando conexão e modelos
 const conn = require('./src/db/conn');
 const User = require('./src/models/User');
 const Address = require('./src/models/Adrdress');
@@ -10,7 +8,6 @@ const Address = require('./src/models/Adrdress');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuração do Handlebars
 app.engine('handlebars', exphbs.engine({
     defaultLayout: 'main',
     runtimeOptions: {
@@ -19,24 +16,17 @@ app.engine('handlebars', exphbs.engine({
     },
 }));
 app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, './src/views'));
 
-// Middleware para parsing de dados
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Servir arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware de log das requisições
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
     next();
 });
-
-// ===============================
-// ROTAS PRINCIPAIS
-// ===============================
 
 // Página inicial - Lista todos os usuários
 app.get('/', async (req, res) => {
@@ -56,10 +46,6 @@ app.get('/', async (req, res) => {
         });
     }
 });
-
-// ===============================
-// ROTAS DE USUÁRIOS
-// ===============================
 
 // Página de cadastro de usuário
 app.get('/users/create', (req, res) => {
@@ -158,10 +144,8 @@ app.post('/users/update', async (req, res) => {
     try {
         const { id, name, occupation, newsletter } = req.body;
 
-        // Validação
-        if (!name || name.trim().length < 2) {
+        if (!name || name.trim().length < 2)
             return res.redirect(`/users/edit/${id}`);
-        }
 
         const updateData = {
             name: name.trim(),
@@ -173,11 +157,8 @@ app.post('/users/update', async (req, res) => {
             where: { id }
         });
 
-        if (updatedRows === 0) {
-            console.log('Nenhum usuário foi atualizado');
-        } else {
-            console.log(`Usuário ${id} atualizado com sucesso`);
-        }
+        if (updatedRows === 0) console.log('Nenhum usuário foi atualizado');
+        else console.log(`Usuário ${id} atualizado com sucesso`);
 
         res.redirect('/');
     } catch (error) {
@@ -201,11 +182,8 @@ app.post('/users/delete/:id', async (req, res) => {
             where: { id }
         });
 
-        if (deletedRows > 0) {
-            console.log(`Usuário ${id} e seus endereços foram excluídos`);
-        } else {
-            console.log('Nenhum usuário foi excluído');
-        }
+        if (deletedRows > 0) console.log(`Usuário ${id} e seus endereços foram excluídos`);
+        else console.log('Nenhum usuário foi excluído');
 
         res.redirect('/');
     } catch (error) {
@@ -214,23 +192,17 @@ app.post('/users/delete/:id', async (req, res) => {
     }
 });
 
-// ===============================
-// ROTAS DE ENDEREÇOS
-// ===============================
-
 // Criar novo endereço
 app.post('/address/create', async (req, res) => {
     try {
         const { userId, street, number, city } = req.body;
 
         // Validação
-        if (!street || street.trim().length < 5) {
+        if (!street || street.trim().length < 5)
             return res.redirect(`/users/edit/${userId}`);
-        }
 
-        if (!city || city.trim().length < 2) {
+        if (!city || city.trim().length < 2)
             return res.redirect(`/users/edit/${userId}`);
-        }
 
         const addressData = {
             street: street.trim(),
@@ -258,9 +230,8 @@ app.post('/address/delete', async (req, res) => {
             where: { id }
         });
 
-        if (deletedRows > 0) {
+        if (deletedRows > 0)
             console.log(`Endereço ${id} excluído`);
-        }
 
         res.redirect(userId ? `/users/edit/${userId}` : '/');
     } catch (error) {
@@ -269,9 +240,7 @@ app.post('/address/delete', async (req, res) => {
     }
 });
 
-// ===============================
 // TRATAMENTO DE ERROS 404
-// ===============================
 app.use((req, res) => {
     res.status(404).render('home', {
         users: [],
@@ -279,9 +248,7 @@ app.use((req, res) => {
     });
 });
 
-// ===============================
 // INICIALIZAÇÃO DO SERVIDOR
-// ===============================
 async function startServer() {
     try {
         // Sincronizar modelos com o banco de dados
