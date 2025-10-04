@@ -1,0 +1,1 @@
+Única coisa a mais que eu coloquei foi o formatDate com helpers, além de colocar tudo no diretório 'src' :), foi mal pela pouca coisa que foi feita e pelo readme horrível.
